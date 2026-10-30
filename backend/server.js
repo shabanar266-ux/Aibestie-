@@ -1,11 +1,23 @@
-const express = require("express"); const cors = require("cors"); require("dotenv").config();
+import dotenv from 'dotenv';
+import { GoogleGenAI } from '@google/genai';
 
-const app = express();
+// Load environment variables from .env file
+dotenv.config();
 
-app.use(cors()); app.use(express.json());
+// Initialize Gemini with your free key
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
-app.get("/", (req, res) => { res.send("Aibestie Backend is running!"); });
+async function testGemini() {
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-3.8-flash',
+      contents: 'Say hello!',
+    });
+    
+    console.log("Gemini Response:", response.text);
+  } catch (error) {
+    console.error("Error connecting to Gemini:", error);
+  }
+}
 
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => { console.log(Server running on port ${PORT}); });
+testGemini();
